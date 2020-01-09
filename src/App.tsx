@@ -1,47 +1,37 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { RandomSort } from './pages/RandomSort';
 import { RandomPick } from './pages/RandomPick';
 import { RandomGroup } from './pages/RandomGroup';
+import { Home } from './pages/Home';
+import { Header } from './components/Header';
+
+interface AppRoute {
+  path: string;
+  label: string;
+  component: React.ComponentType;
+}
+
+const routes: AppRoute[] = [
+  { path: '/random-sort', label: 'Random Sort', component: RandomSort },
+  { path: '/random-pick', label: 'Random Pick', component: RandomPick },
+  { path: '/random-group', label: 'Random Group', component: RandomGroup },
+  { path: '/', label: 'Home', component: Home },
+];
 
 const App: React.FC = () => {
   return (
     <React.StrictMode>
       <Router>
-        <header>
-          <h1>Shuffle</h1>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/random-sort">Random Sort</Link>
-              </li>
-              <li>
-                <Link to="/random-pick">Random Pick</Link>
-              </li>
-              <li>
-                <Link to="/random-group">Random Group</Link>
-              </li>
-            </ul>
-          </nav>
-        </header>
+        <Header navLinks={routes} />
 
         <main>
           <Switch>
-            <Route path="/random-sort">
-              <RandomSort />
-            </Route>
-            <Route path="/random-pick">
-              <RandomPick />
-            </Route>
-            <Route path="/random-group">
-              <RandomGroup />
-            </Route>
-            <Route>
-              <div>Hello world</div>
-            </Route>
+            {routes.map(({ path, component: Component }) => (
+              <Route key={path} path={path}>
+                <Component />
+              </Route>
+            ))}
           </Switch>
         </main>
       </Router>
