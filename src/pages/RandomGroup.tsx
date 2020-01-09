@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { AddForm } from '../components/AddForm';
 import { useList, Item } from '../hooks/use-list';
 import { shuffle } from 'lodash-es';
+import { GridInner, SubGrid } from '../components/Grid';
+import {
+  Section,
+  SectionTitle,
+  SectionList,
+  SectionListItem,
+  SectionButton,
+} from '../components/Section';
 
 export const RandomGroup: React.FC = () => {
   const [
@@ -41,32 +49,36 @@ export const RandomGroup: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <div>
-        <div>
-          <h2>Groups</h2>
-          <AddForm
-            onSubmit={addGroup}
-            label="Group"
-            onPaste={handleGroupPaste}
-          />
-          <ul>
-            {groups.map(({ id, value }) => (
-              <li key={id}>
-                <span>{value}</span>
-                <button type="button" onClick={() => removeGroup(id)}>
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
+    <GridInner as="main">
+      <SubGrid columns={3}>
+        <GridInner>
+          <Section>
+            <SectionTitle>Groups</SectionTitle>
 
-          <button type="button" onClick={clearGroups}>
-            Clear all
-          </button>
-        </div>
+            <AddForm
+              onSubmit={addGroup}
+              label="Group"
+              onPaste={handleGroupPaste}
+            />
 
-        <div>
+            <SectionList>
+              {groups.map(({ id, value }) => (
+                <SectionListItem key={id}>
+                  <span>{value}</span>
+                  <button type="button" onClick={() => removeGroup(id)}>
+                    Remove
+                  </button>
+                </SectionListItem>
+              ))}
+            </SectionList>
+
+            <SectionButton type="button" onClick={clearGroups}>
+              Clear all
+            </SectionButton>
+          </Section>
+        </GridInner>
+
+        <GridInner>
           <h2>People</h2>
           <AddForm
             onSubmit={addPerson}
@@ -87,33 +99,35 @@ export const RandomGroup: React.FC = () => {
           <button type="button" onClick={clearPeople}>
             Clear all
           </button>
-        </div>
-      </div>
+        </GridInner>
 
-      <div>
-        <h2>Sorted</h2>
+        <GridInner>
+          <h2>Sorted</h2>
 
-        <div>
-          <button type="button" onClick={handleSort}>
-            Sort
-          </button>
-        </div>
+          <div>
+            <button type="button" onClick={handleSort}>
+              Sort
+            </button>
+          </div>
 
-        <ul>
-          {groups.map((group, idx) => (
-            <li key={group.id}>
-              <h3>{group.value}</h3>
-              {sorted[idx] && (
-                <ol>
-                  {sorted[idx].map(person => (
-                    <li key={person.id}>{person.value}</li>
-                  ))}
-                </ol>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </React.Fragment>
+          <ul>
+            {groups.map((group, idx) => (
+              <li key={group.id}>
+                <h3>{group.value}</h3>
+                {sorted[idx] && (
+                  <ol>
+                    {sorted[idx].map(person => (
+                      <li key={person.id}>{person.value}</li>
+                    ))}
+                  </ol>
+                )}
+              </li>
+            ))}
+          </ul>
+        </GridInner>
+      </SubGrid>
+    </GridInner>
   );
 };
+
+export default RandomGroup;

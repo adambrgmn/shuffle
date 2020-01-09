@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { RandomSort } from './pages/RandomSort';
-import { RandomPick } from './pages/RandomPick';
-import { RandomGroup } from './pages/RandomGroup';
 import { Home } from './pages/Home';
 import { Header } from './components/Header';
+import { Grid, GridInner } from './components/Grid';
+
+const RandomSort = React.lazy(() => import('./pages/RandomSort'));
+const RandomPick = React.lazy(() => import('./pages/RandomPick'));
+const RandomGroup = React.lazy(() => import('./pages/RandomGroup'));
 
 interface AppRoute {
   path: string;
@@ -13,9 +15,9 @@ interface AppRoute {
 }
 
 const routes: AppRoute[] = [
-  { path: '/random-sort', label: 'Random Sort', component: RandomSort },
-  { path: '/random-pick', label: 'Random Pick', component: RandomPick },
-  { path: '/random-group', label: 'Random Group', component: RandomGroup },
+  { path: '/random-sort', label: 'Sort', component: RandomSort },
+  { path: '/random-pick', label: 'Pick', component: RandomPick },
+  { path: '/random-group', label: 'Group', component: RandomGroup },
   { path: '/', label: 'Home', component: Home },
 ];
 
@@ -23,17 +25,19 @@ const App: React.FC = () => {
   return (
     <React.StrictMode>
       <Router>
-        <Header navLinks={routes} />
+        <Grid>
+          <Header navLinks={routes} />
 
-        <main>
-          <Switch>
-            {routes.map(({ path, component: Component }) => (
-              <Route key={path} path={path}>
-                <Component />
-              </Route>
-            ))}
-          </Switch>
-        </main>
+          <React.Suspense fallback={<GridInner>Loading...</GridInner>}>
+            <Switch>
+              {routes.map(({ path, component: Component }) => (
+                <Route key={path} path={path}>
+                  <Component />
+                </Route>
+              ))}
+            </Switch>
+          </React.Suspense>
+        </Grid>
       </Router>
     </React.StrictMode>
   );

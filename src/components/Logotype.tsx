@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useInterval } from '@fransvilhelm/hooks';
-import { shuffle } from 'lodash-es';
 
 const Svg = styled.svg`
   display: block;
@@ -9,15 +8,19 @@ const Svg = styled.svg`
   height: auto;
 `;
 
-const Line = styled.rect`
-  transition: all 0.3s ease-in-out;
+const Line = styled.rect<{ idx: number }>`
+  transition: y 1s ease-in-out;
+  transition-delay: ${({ idx }) => idx * 0.3}s;
 `;
 
 export const Logotype: React.FC = () => {
-  const [lines, setLines] = useState([0, 1, 2, 3]);
+  const [lines, setLines] = useState([0, 1, 2]);
+  const start = 10;
+  const multiplier = 12;
 
   const shuffleLines = () => {
-    setLines(shuffle(lines));
+    const [head, ...rest] = lines;
+    setLines([...rest, head]);
   };
 
   useInterval(shuffleLines, 5000);
@@ -29,20 +32,22 @@ export const Logotype: React.FC = () => {
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      onMouseEnter={shuffleLines}
     >
       <rect width="48" height="48" rx="4" fill="black" />
-      {lines.map((int, idx) => (
-        <Line
-          key={idx}
-          x="8"
-          y={10 + 8 * int}
-          width="32"
-          height="4"
-          rx="1"
-          fill="white"
-        />
-      ))}
+      <g>
+        {lines.map((int, idx) => (
+          <Line
+            key={idx}
+            idx={int}
+            x="8"
+            y={start + int * multiplier}
+            width="32"
+            height="4"
+            rx="1"
+            fill="white"
+          />
+        ))}
+      </g>
     </Svg>
   );
 };
